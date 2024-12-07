@@ -155,4 +155,9 @@ def delete_ders_programi(db: Session, id: UUID):
     try:
         db_dp = get_ders_programi_by_id(db, id)
         if not db_dp:
-            
+            return False
+        db.delete(db_dp)
+        db.commit()
+        return True
+    except Exception as e:
+        raise ValueError(f"Ders programı silinirken hata: {e}")
