@@ -14,3 +14,4 @@ Bu proje, FastAPI, SQLAlchemy, Pydantic ve temel bir HTML/CSS/JS arayüzü kulla
 # fastApiProject
 # fastApiProject
 # fastApiProject
+# fastApiProject
