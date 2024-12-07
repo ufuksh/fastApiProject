@@ -2,72 +2,97 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
     <title>Ortaöğretim Veri Girişi Sistemi</title>
     <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
-    <h1>Ortaöğretim Veri Girişi Sistemi</h1>
-    <section id="ogrenci-section">
-        <h2>Öğrenciler</h2>
-        <form id="ogrenci-form">
-            <input type="text" name="ad" placeholder="Ad" required />
-            <input type="text" name="soyad" placeholder="Soyad" required />
-            <input type="text" name="ogrenci_numarasi" placeholder="Numara" required />
-            <input type="text" name="sinif" placeholder="Sınıf" required />
-            <input type="text" name="iletisim" placeholder="İletişim" required />
-            <button type="submit">Öğrenci Ekle</button>
-        </form>
-        <table id="ogrenci-table">
-            <thead>
-                <tr>
-                    <th>ID</th><th>Ad</th><th>Soyad</th><th>Numara</th><th>Sınıf</th><th>İletişim</th><th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </section>
+    <header>
+        <h1>Ortaöğretim Veri Girişi Sistemi</h1>
+    </header>
+    <main>
+        <!-- Öğrenci Yönetim Bölümü -->
+        <section id="ogrenci-section">
+            <h2>Öğrenciler</h2>
+            <form id="ogrenci-form">
+                <input type="text" name="ad" placeholder="Ad" required />
+                <input type="text" name="soyad" placeholder="Soyad" required />
+                <input type="text" name="ogrenci_numarasi" placeholder="Numara" required />
+                <input type="text" name="sinif" placeholder="Sınıf" required />
+                <input type="text" name="iletisim" placeholder="İletişim" required />
+                <button type="submit">Öğrenci Ekle</button>
+            </form>
+            <table id="ogrenci-table">
+                <thead>
+                    <tr>
+                        <th>ID (Kısaltılmış)</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Numara</th>
+                        <th>Sınıf</th>
+                        <th>İletişim</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
 
-    <section id="ogretmen-section">
-        <h2>Öğretmenler</h2>
-        <form id="ogretmen-form">
-            <input type="text" name="ad" placeholder="Ad" required />
-            <input type="text" name="soyad" placeholder="Soyad" required />
-            <input type="text" name="brans" placeholder="Branş" required />
-            <input type="text" name="iletisim" placeholder="İletişim" required />
-            <button type="submit">Öğretmen Ekle</button>
-        </form>
-        <table id="ogretmen-table">
-            <thead>
-                <tr>
-                    <th>ID</th><th>Ad</th><th>Soyad</th><th>Branş</th><th>İletişim</th><th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </section>
+        <!-- Öğretmen Yönetim Bölümü -->
+        <section id="ogretmen-section">
+            <h2>Öğretmenler</h2>
+            <form id="ogretmen-form">
+                <input type="text" name="ad" placeholder="Ad" required />
+                <input type="text" name="soyad" placeholder="Soyad" required />
+                <input type="text" name="brans" placeholder="Branş" required />
+                <input type="text" name="iletisim" placeholder="İletişim" required />
+                <button type="submit">Öğretmen Ekle</button>
+            </form>
+            <table id="ogretmen-table">
+                <thead>
+                    <tr>
+                        <th>ID (Kısaltılmış)</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Branş</th>
+                        <th>İletişim</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
 
-    <section id="ders-programi-section">
-        <h2>Ders Programı</h2>
-        <form id="ders-programi-form">
-            <input type="text" name="sinif" placeholder="Sınıf" required />
-            <input type="text" name="ders" placeholder="Ders" required />
-            <input type="text" name="saat" placeholder="Saat" required />
-            <select name="ogretmen_id" id="ogretmen-select" required>
-                <option value="">Öğretmen Seçin</option>
-            </select>
-            <button type="submit">Ders Programı Ekle</button>
-        </form>
-        <table id="ders-programi-table">
-            <thead>
-                <tr>
-                    <th>ID</th><th>Sınıf</th><th>Ders</th><th>Saat</th><th>Öğretmen ID</th><th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </section>
-
+        <!-- Ders Programı Yönetim Bölümü -->
+        <section id="ders-programi-section">
+            <h2>Ders Programı</h2>
+            <form id="ders-programi-form">
+                <input type="text" name="sinif" placeholder="Sınıf" required />
+                <input type="text" name="ders" placeholder="Ders" required />
+                <input type="text" name="saat" placeholder="Saat" required />
+                <select name="ogretmen_id" id="ogretmen-select" required>
+                    <option value="">Öğretmen Seçin</option>
+                </select>
+                <button type="submit">Ders Programı Ekle</button>
+            </form>
+            <table id="ders-programi-table">
+                <thead>
+                    <tr>
+                        <th>ID (Kısaltılmış)</th>
+                        <th>Sınıf</th>
+                        <th>Ders</th>
+                        <th>Saat</th>
+                        <th>Öğretmen ID</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Ortaöğretim Veri Girişi Sistemi</p>
+    </footer>
     <script src="/static/js/main.js"></script>
 </body>
 </html>

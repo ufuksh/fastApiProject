@@ -1,6 +1,5 @@
 # fastApiProject
 
-
 # Ortaöğretim Veri Girişi Sistemi (Temel İskelet)
 
 Bu proje, FastAPI, SQLAlchemy, Pydantic ve temel bir HTML/CSS/JS arayüzü kullanarak basit bir ortaöğretim veri yönetim sistemi için hazırlanmış bir iskelettir.
@@ -11,9 +10,3 @@ Bu proje, FastAPI, SQLAlchemy, Pydantic ve temel bir HTML/CSS/JS arayüzü kulla
    ```bash
    pip install -r requirements.txt
    ```
-# fastApiProject
-# fastApiProject
-# fastApiProject
-# fastApiProject
-# fastApiProject
-# fastApiProject
