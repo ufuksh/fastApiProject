@@ -85,3 +85,193 @@ button.delete-ogretmen:hover,
 button.delete-ders-programi:hover {
     background-color: #a71d2a; /* Hover durumunda koyu kırmızı */
 }
+:root {
+    --primary-color: #007BFF;
+    --primary-hover: #0056b3;
+    --danger-color: #dc3545;
+    --danger-hover: #a71d2a;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --header-bg: #fff;
+    --header-text: #444;
+    --table-header-bg: #f4f4f4;
+    --border-color: #ddd;
+    --font-family: 'Arial', sans-serif;
+    --transition-speed: 0.3s;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background-color: var(--header-bg);
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    transition: color var(--transition-speed);
+}
+
+nav a:hover {
+    color: var(--primary-hover);
+}
+main .management-section {
+    padding: 40px 20px;
+}
+
+.management-section h2 {
+    margin-bottom: 20px;
+    color: var(--header-text);
+    text-align: center;
+}
+.management-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--header-bg);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: border-color var(--transition-speed);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.management-form button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color var(--transition-speed);
+    align-self: flex-end;
+}
+
+.management-form button:hover {
+    background-color: var(--primary-hover);
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--header-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-table th,
+.data-table td {
+    border: 1px solid var(--border-color);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: var(--table-header-bg);
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--header-text);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.data-table tbody tr:hover {
+    background-color: #e9e9e9;
+}
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color var(--transition-speed);
+}
+
+.btn-edit {
+    background-color: #28a745; /* Yeşil */
+    color: #fff;
+    margin-right: 5px;
+}
+
+.btn-edit:hover {
+    background-color: #1e7e34;
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-hover);
+}
+footer {
+    background-color: var(--header-bg);
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: 40px;
+}
+
+footer p {
+    color: var(--text-color);
+    font-size: 14px;
+}
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .management-form {
+        flex-direction: column;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 10px;
+    }
+}
