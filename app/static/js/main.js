@@ -15,8 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const error = await res.json();
                 console.error(`Hata: ${error.detail || "Bilinmeyen bir hata oluştu."}`);
                 alert(error.detail || "Bir hata oluştu.");
+                return null;
             }
-            return res.ok ? res.json() : null;
+            return await res.json();
         } catch (err) {
             console.error("Sunucuya bağlanırken hata oluştu:", err);
             alert("Sunucuya bağlanırken hata oluştu.");
@@ -60,13 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
             ogrenciler.forEach(o => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${o.id.slice(0, 8)}</td>
+                    <td>${o.id}</td> <!-- Tam UUID -->
                     <td>${o.ad}</td>
                     <td>${o.soyad}</td>
                     <td>${o.ogrenci_numarasi}</td>
                     <td>${o.sinif}</td>
                     <td>${o.iletisim}</td>
-                    <td><button data-id="${o.id}" class="delete-ogrenci">Sil</button></td>
+                    <td><button data-id="${o.id}" class="delete-ogrenci">Sil</button></td> <!-- Tam UUID -->
                 `;
                 ogrenciTableBody.appendChild(row);
             });
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Öğrenci Sil
     ogrenciTableBody.addEventListener("click", async (e) => {
         if (e.target.classList.contains("delete-ogrenci")) {
-            const id = e.target.dataset.id;
+            const id = e.target.dataset.id; // Tam UUID kullanılır
             const result = await fetchAndHandle(`/ogrenciler/${id}`, { method: "DELETE" });
             if (result) await loadOgrenciler();
         }
@@ -106,19 +107,19 @@ document.addEventListener("DOMContentLoaded", () => {
             ogretmenler.forEach(o => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${o.id.slice(0, 8)}</td>
+                    <td>${o.id}</td> <!-- Tam UUID -->
                     <td>${o.ad}</td>
                     <td>${o.soyad}</td>
                     <td>${o.brans}</td>
                     <td>${o.iletisim}</td>
-                    <td><button data-id="${o.id}" class="delete-ogretmen">Sil</button></td>
+                    <td><button data-id="${o.id}" class="delete-ogretmen">Sil</button></td> <!-- Tam UUID -->
                 `;
                 ogretmenTableBody.appendChild(row);
             });
         }
     }
 
-    // Ders Programı İşlemleri
+    // Ders Programı Ekle
     dersProgramiForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(dersProgramiForm).entries());
@@ -133,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Ders Programı Listele
     async function loadDersProgrami() {
         const dersler = await fetchAndHandle("/dersprogrami/");
         if (dersler) {
@@ -140,12 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
             dersler.forEach(d => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${d.id.slice(0, 8)}</td>
+                    <td>${d.id}</td> <!-- Tam UUID -->
                     <td>${d.sinif}</td>
                     <td>${d.ders}</td>
                     <td>${d.saat}</td>
-                    <td>${d.ogretmen_id.slice(0, 8)}</td>
-                    <td><button data-id="${d.id}" class="delete-ders-programi">Sil</button></td>
+                    <td>${d.ogretmen_id}</td> <!-- Tam UUID -->
+                    <td><button data-id="${d.id}" class="delete-ders-programi">Sil</button></td> <!-- Tam UUID -->
                 `;
                 dersProgramiTableBody.appendChild(row);
             });
@@ -155,13 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ders Programı Sil
     dersProgramiTableBody.addEventListener("click", async (e) => {
         if (e.target.classList.contains("delete-ders-programi")) {
-            const id = e.target.dataset.id;
+            const id = e.target.dataset.id; // Tam UUID kullanılır
             const result = await fetchAndHandle(`/dersprogrami/${id}`, { method: "DELETE" });
             if (result) await loadDersProgrami();
         }
     });
 
-    // Sayfa yüklendiğinde verileri getir
+    // Sayfa yüklendiğinde verileri yükle
     (async function init() {
         await loadOgrenciler();
         await loadOgretmenler();
