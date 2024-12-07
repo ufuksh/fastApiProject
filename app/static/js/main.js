@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const BASE_URL = "http://35.158.119.153:8000";
     const ogrenciForm = document.getElementById("ogrenci-form");
     const ogrenciTableBody = document.querySelector("#ogrenci-table tbody");
     const ogretmenForm = document.getElementById("ogretmen-form");
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchAndHandle(url, options = {}) {
         try {
-            const res = await fetch(url, options);
+            const res = await fetch(BASE_URL + url, options);
             if (!res.ok) {
                 const error = await res.json();
                 console.error(`Hata: ${error.detail || "Bilinmeyen bir hata oluştu."}`);
