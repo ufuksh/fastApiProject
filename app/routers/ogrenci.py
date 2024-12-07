@@ -9,6 +9,9 @@ router = APIRouter()
 
 @router.post("/", response_model=OgrenciRead)
 def create_ogrenci(ogrenci: OgrenciCreate, db: Session = Depends(get_db)):
+    """
+    Yeni bir öğrenci oluşturur.
+    """
     try:
         return crud.create_ogrenci(db, ogrenci)
     except Exception as e:
@@ -16,6 +19,9 @@ def create_ogrenci(ogrenci: OgrenciCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[OgrenciRead])
 def list_ogrenciler(db: Session = Depends(get_db)):
+    """
+    Tüm öğrencileri listele.
+    """
     ogrenciler = crud.get_ogrenciler(db)
     if not ogrenciler:
         raise HTTPException(status_code=404, detail="Hiç öğrenci bulunamadı")
@@ -23,6 +29,9 @@ def list_ogrenciler(db: Session = Depends(get_db)):
 
 @router.put("/{id}", response_model=OgrenciRead)
 def update_ogrenci_endpoint(id: UUID, ogrenci: OgrenciUpdate, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip öğrenciyi günceller.
+    """
     try:
         updated = crud.update_ogrenci(db, id, ogrenci)
         if not updated:
@@ -33,6 +42,9 @@ def update_ogrenci_endpoint(id: UUID, ogrenci: OgrenciUpdate, db: Session = Depe
 
 @router.delete("/{id}")
 def delete_ogrenci_endpoint(id: UUID, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip öğrenciyi siler.
+    """
     try:
         success = crud.delete_ogrenci(db, id)
         if not success:

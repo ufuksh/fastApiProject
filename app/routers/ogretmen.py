@@ -9,6 +9,9 @@ router = APIRouter()
 
 @router.post("/", response_model=OgretmenRead)
 def create_ogretmen(ogretmen: OgretmenCreate, db: Session = Depends(get_db)):
+    """
+    Yeni bir öğretmen oluşturur.
+    """
     try:
         return crud.create_ogretmen(db, ogretmen)
     except Exception as e:
@@ -16,6 +19,9 @@ def create_ogretmen(ogretmen: OgretmenCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[OgretmenRead])
 def list_ogretmenler(db: Session = Depends(get_db)):
+    """
+    Tüm öğretmenleri listele.
+    """
     ogretmenler = crud.get_ogretmenler(db)
     if not ogretmenler:
         raise HTTPException(status_code=404, detail="Hiç öğretmen bulunamadı")
@@ -23,6 +29,9 @@ def list_ogretmenler(db: Session = Depends(get_db)):
 
 @router.put("/{id}", response_model=OgretmenRead)
 def update_ogretmen_endpoint(id: UUID, ogretmen: OgretmenUpdate, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip öğretmeni günceller.
+    """
     try:
         updated = crud.update_ogretmen(db, id, ogretmen)
         if not updated:
@@ -33,6 +42,9 @@ def update_ogretmen_endpoint(id: UUID, ogretmen: OgretmenUpdate, db: Session = D
 
 @router.delete("/{id}")
 def delete_ogretmen_endpoint(id: UUID, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip öğretmeni siler.
+    """
     try:
         success = crud.delete_ogretmen(db, id)
         if not success:

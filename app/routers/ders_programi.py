@@ -9,13 +9,19 @@ router = APIRouter()
 
 @router.post("/", response_model=DersProgramiRead)
 def create_ders_programi(dp: DersProgramiCreate, db: Session = Depends(get_db)):
+    """
+    Yeni bir ders programı oluşturur.
+    """
     try:
         return crud.create_ders_programi(db, dp)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Hata oluştu: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Ders programı oluşturulurken hata oluştu: {str(e)}")
 
 @router.get("/", response_model=list[DersProgramiRead])
 def list_ders_programlari(db: Session = Depends(get_db)):
+    """
+    Tüm ders programlarını listele.
+    """
     ders_programlari = crud.get_ders_programlari(db)
     if not ders_programlari:
         raise HTTPException(status_code=404, detail="Hiç ders programı bulunamadı")
@@ -23,6 +29,9 @@ def list_ders_programlari(db: Session = Depends(get_db)):
 
 @router.put("/{id}", response_model=DersProgramiRead)
 def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip ders programını günceller.
+    """
     try:
         updated = crud.update_ders_programi(db, id, dp)
         if not updated:
@@ -33,6 +42,9 @@ def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session 
 
 @router.delete("/{id}")
 def delete_ders_programi_endpoint(id: UUID, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip ders programını siler.
+    """
     try:
         success = crud.delete_ders_programi(db, id)
         if not success:
