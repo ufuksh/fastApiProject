@@ -1,13 +1,14 @@
 # app/crud.py
 
 from sqlalchemy.orm import Session
-import logging
+from sqlalchemy.exc import IntegrityError
 from app.models import Ogrenci, Ogretmen, DersProgrami
 from app.schemas import (
     OgrenciCreate, OgrenciUpdate,
     OgretmenCreate, OgretmenUpdate,
     DersProgramiCreate, DersProgramiUpdate
 )
+import logging
 
 # Logger Ayarları
 logger = logging.getLogger(__name__)
@@ -59,8 +60,8 @@ def delete_by_id(db: Session, model, id: str):
 def create_ogrenci(db: Session, ogrenci: OgrenciCreate):
     existing_ogrenci = db.query(Ogrenci).filter(Ogrenci.ogrenci_numarasi == ogrenci.ogrenci_numarasi).first()
     if existing_ogrenci:
-        logger.error(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
-        raise ValueError(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
+        logger.info(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
+        return existing_ogrenci  # Mevcut öğrenciyi döndür
     try:
         db_ogrenci = Ogrenci(**ogrenci.dict())
         db.add(db_ogrenci)
@@ -68,7 +69,12 @@ def create_ogrenci(db: Session, ogrenci: OgrenciCreate):
         db.refresh(db_ogrenci)
         logger.info(f"Öğrenci oluşturuldu: {db_ogrenci.id}")
         return db_ogrenci
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
+        raise ValueError(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Öğrenci oluşturulurken hata: {e}")
         raise ValueError(f"Öğrenci oluşturulurken hata: {e}")
 
@@ -116,8 +122,8 @@ def delete_ogrenci(db: Session, id: str):
 def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
     existing_ogretmen = db.query(Ogretmen).filter(Ogretmen.ogretmen_numarasi == ogretmen.ogretmen_numarasi).first()
     if existing_ogretmen:
-        logger.error(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
-        raise ValueError(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
+        logger.info(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
+        return existing_ogretmen  # Mevcut öğretmeni döndür
     try:
         db_ogretmen = Ogretmen(**ogretmen.dict())
         db.add(db_ogretmen)
@@ -125,7 +131,12 @@ def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
         db.refresh(db_ogretmen)
         logger.info(f"Öğretmen oluşturuldu: {db_ogretmen.id}")
         return db_ogretmen
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
+        raise ValueError(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Öğretmen oluşturulurken hata: {e}")
         raise ValueError(f"Öğretmen oluşturulurken hata: {e}")
 
@@ -172,15 +183,26 @@ def delete_ogretmen(db: Session, id: str):
 
 def create_ders_programi(db: Session, ders_programi: DersProgramiCreate):
     try:
+        # Öğretmenin var olup olmadığını kontrol et
+        ogretmen = db.query(Ogretmen).filter(Ogretmen.id == str(ders_programi.ogretmen_id)).first()
+        if not ogretmen:
+            logger.warning(f"Belirtilen öğretmen bulunamadı: {ders_programi.ogretmen_id}")
+            raise ValueError(f"Belirtilen öğretmen bulunamadı: {ders_programi.ogretmen_id}")
+        
         db_ders_programi = DersProgrami(**ders_programi.dict())
         db.add(db_ders_programi)
         db.commit()
         db.refresh(db_ders_programi)
         logger.info(f"Ders programı oluşturuldu: {db_ders_programi.id}")
         return db_ders_programi
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Ders programı eklenirken benzersiz kısıtlamaya uyulmadı: {ie}")
+        raise ValueError(f"Ders programı eklenirken benzersiz kısıtlamaya uyulmadı: {ie}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Ders programı oluşturulurken hata: {e}")
-        raise ValueError(f"Ders programı oluşturulurken hata: {e}")
+        raise ValueError(f"Ders programı oluşturulurken hata: {e}") from e
 
 def get_ders_programi(db: Session):
     try:
