@@ -51,15 +51,18 @@ def update_ogrenci(db: Session, id: UUID, ogrenci: OgrenciUpdate):
 
 def delete_ogrenci(db: Session, id: UUID):
     try:
-        db_ogrenci = get_ogrenci_by_id(db, id)
+        print(f"Silinmek istenen öğrenci ID: {id}")
+        db_ogrenci = db.query(Ogrenci).filter(Ogrenci.id == id).first()
         if not db_ogrenci:
-            return False 
+            print("Öğrenci bulunamadı!")
+            return False
         db.delete(db_ogrenci)
         db.commit()
+        print("Silme işlemi başarılı!")
         return True
     except Exception as e:
+        print(f"Silme sırasında hata oluştu: {e}")
         raise ValueError(f"Öğrenci silinirken hata: {e}")
-
 
 
 # Öğretmen CRUD İşlemleri
