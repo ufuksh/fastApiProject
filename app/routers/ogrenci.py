@@ -54,17 +54,18 @@ def update_ogrenci_endpoint(id: UUID, ogrenci: OgrenciUpdate, db: Session = Depe
             detail=f"Güncelleme sırasında hata oluştu: {str(e)}"
         )
 
-def delete_ogrenci(db: Session, id: UUID):
+@router.delete("/{id}", response_model=bool)
+def delete_ogrenci_endpoint(id: UUID, db: Session = Depends(get_db)):
+    """
+    Belirtilen ID'ye sahip öğrenciyi siler.
+    """
     try:
-        print(f"Silinmek istenen öğrenci ID: {id}")
-        db_ogrenci = db.query(Ogrenci).filter(Ogrenci.id == id).first()
-        if not db_ogrenci:
-            print("Öğrenci bulunamadı!")
-            return False
-        db.delete(db_ogrenci)
-        db.commit()
-        print("Silme işlemi başarılı!")
+        success = delete_ogrenci(db, id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Öğrenci bulunamadı")
         return True
     except Exception as e:
-        print(f"Silme sırasında hata oluştu: {e}")
-        raise ValueError(f"Öğrenci silinirken hata: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Silme işlemi sırasında hata oluştu: {str(e)}"
+        )
