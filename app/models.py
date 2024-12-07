@@ -13,6 +13,11 @@ class Ogrenci(Base):
     sinif = Column(String(10), index=True)
     iletisim = Column(String(255), index=True)
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if isinstance(self.id, str):
+            self.id = uuid.UUID(self.id)
+
 class Ogretmen(Base):
     __tablename__ = "ogretmenler"
     id = Column(CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -22,6 +27,11 @@ class Ogretmen(Base):
     iletisim = Column(String(255), index=True)
     ders_programlari = relationship("DersProgrami", back_populates="ogretmen")
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if isinstance(self.id, str):
+            self.id = uuid.UUID(self.id)
+
 class DersProgrami(Base):
     __tablename__ = "dersprogrami"
     id = Column(CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -30,3 +40,8 @@ class DersProgrami(Base):
     saat = Column(String(20), index=True)
     ogretmen_id = Column(CHAR(36), ForeignKey("ogretmenler.id"))
     ogretmen = relationship("Ogretmen", back_populates="ders_programlari")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if isinstance(self.id, str):
+            self.id = uuid.UUID(self.id)
