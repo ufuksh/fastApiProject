@@ -7,18 +7,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import ogrenci, ogretmen, ders_programi
 from app.database import Base, engine
 from app.core.config import settings
-from app.core.logger import setup_logger
+from app.core.logger import setup_logger  # Logger'ı import edin
 import uvicorn
 
-# Logger yapılandırmasını çağır
-setup_logger()
-
-# FastAPI uygulaması
+# FastAPI uygulamasını oluşturun
 app = FastAPI(
     title="Ortaöğretim Veri Girişi Sistemi",
     description="Öğrenci, Öğretmen ve Ders Programı Yönetim API'si",
-    version="1.0.0"
+    version="1.0.0",
+    debug=settings.DEBUG
 )
+
+# Logger'ı ayarlama ve uygulamaya ekleme
+setup_logger(app)
 
 # CORS Ayarları (Gerekliyse)
 app.add_middleware(
@@ -49,13 +50,12 @@ app.include_router(ders_programi.router, prefix="/dersprogrami", tags=["Ders Pro
 # Uygulama başlatılırken
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Uygulama başlatılıyor...")
-
+    app.logger.info("Uygulama başlatılıyor...")
 
 # Uygulama kapatılırken
 @app.on_event("shutdown")
 async def shutdown_event():
-    logger.info("Uygulama kapatılıyor...")
+    app.logger.info("Uygulama kapatılıyor...")
 
 # Eğer bu dosya doğrudan çalıştırılacaksa
 if __name__ == "__main__":
