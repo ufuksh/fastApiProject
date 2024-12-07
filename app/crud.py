@@ -67,15 +67,14 @@ def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
 
 def get_ogretmenler(db: Session):
     try:
-        return db.query(Ogretmen).all()
+        ogretmenler = db.query(Ogretmen).all()
+        for ogretmen in ogretmenler:
+            if isinstance(ogretmen.id, str):
+                ogretmen.id = uuid.UUID(ogretmen.id)
+        return ogretmenler
     except Exception as e:
         raise ValueError(f"Öğretmenler listelenirken hata: {e}")
 
-def get_ogretmen_by_id(db: Session, id: UUID):
-    try:
-        return db.query(Ogretmen).filter(Ogretmen.id == id).first()
-    except Exception as e:
-        raise ValueError(f"Öğretmen getirilirken hata: {e}")
 
 def update_ogretmen(db: Session, id: UUID, ogretmen: OgretmenUpdate):
     try:

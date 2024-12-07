@@ -28,12 +28,13 @@ def list_ogretmenler(db: Session = Depends(get_db)):
     """
     try:
         ogretmenler = crud.get_ogretmenler(db)
-        return ogretmenler  # Boş liste döndürülebilir, 404 yerine.
+        return ogretmenler
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Öğretmenleri listelerken hata oluştu: {str(e)}"
+            detail=f"Öğretmenler listelenirken hata oluştu: {str(e)}"
         )
+
 
 @router.put("/{id}", response_model=OgretmenRead)
 def update_ogretmen_endpoint(id: UUID, ogretmen: OgretmenUpdate, db: Session = Depends(get_db)):

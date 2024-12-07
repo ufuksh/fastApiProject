@@ -50,6 +50,7 @@ class OgretmenRead(OgretmenBase):
         orm_mode = True
 
 
+
 # Ders Programı Şemaları
 class DersProgramiBase(BaseModel):
     sinif: str
