@@ -1,6 +1,9 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
+from uuid import UUID
 
+
+# Öğrenci Şemaları
 class OgrenciBase(BaseModel):
     ad: str
     soyad: str
@@ -8,8 +11,10 @@ class OgrenciBase(BaseModel):
     sinif: str
     iletisim: str
 
+
 class OgrenciCreate(OgrenciBase):
     pass
+
 
 class OgrenciUpdate(BaseModel):
     ad: Optional[str] = None
@@ -18,19 +23,25 @@ class OgrenciUpdate(BaseModel):
     sinif: Optional[str] = None
     iletisim: Optional[str] = None
 
+
 class OgrenciRead(OgrenciBase):
-    id: int
+    id: UUID
+
     class Config:
         orm_mode = True
 
+
+# Öğretmen Şemaları
 class OgretmenBase(BaseModel):
     ad: str
     soyad: str
     brans: str
     iletisim: str
 
+
 class OgretmenCreate(OgretmenBase):
     pass
+
 
 class OgretmenUpdate(BaseModel):
     ad: Optional[str] = None
@@ -38,27 +49,35 @@ class OgretmenUpdate(BaseModel):
     brans: Optional[str] = None
     iletisim: Optional[str] = None
 
+
 class OgretmenRead(OgretmenBase):
-    id: int
+    id: UUID
+
     class Config:
         orm_mode = True
 
+
+# Ders Programı Şemaları
 class DersProgramiBase(BaseModel):
     sinif: str
     ders: str
     saat: str
-    ogretmen_id: int
+    ogretmen_id: UUID
+
 
 class DersProgramiCreate(DersProgramiBase):
     pass
+
 
 class DersProgramiUpdate(BaseModel):
     sinif: Optional[str] = None
     ders: Optional[str] = None
     saat: Optional[str] = None
-    ogretmen_id: Optional[int] = None
+    ogretmen_id: Optional[UUID] = None
+
 
 class DersProgramiRead(DersProgramiBase):
-    id: int
+    id: UUID
+
     class Config:
         orm_mode = True
