@@ -15,6 +15,7 @@ def create_ders_programi(dp: DersProgramiCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_ders_programi(db, dp)
     except Exception as e:
+        # Detaylı loglama yapılabilir
         raise HTTPException(status_code=400, detail=f"Ders programı oluşturulurken hata oluştu: {str(e)}")
 
 @router.get("/", response_model=list[DersProgramiRead])
@@ -23,9 +24,7 @@ def list_ders_programlari(db: Session = Depends(get_db)):
     Tüm ders programlarını listele.
     """
     ders_programlari = crud.get_ders_programlari(db)
-    if not ders_programlari:
-        raise HTTPException(status_code=404, detail="Hiç ders programı bulunamadı")
-    return ders_programlari
+    return ders_programlari  # Boş liste döndürülebilir, 404 yerine.
 
 @router.put("/{id}", response_model=DersProgramiRead)
 def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session = Depends(get_db)):

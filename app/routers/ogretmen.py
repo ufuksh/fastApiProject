@@ -7,7 +7,7 @@ from app import crud
 
 router = APIRouter()
 
-@router.post("/", response_model=OgretmenRead)
+@router.post("/", response_model=OgretmenRead, status_code=201)
 def create_ogretmen(ogretmen: OgretmenCreate, db: Session = Depends(get_db)):
     """
     Yeni bir öğretmen oluşturur.
@@ -15,17 +15,29 @@ def create_ogretmen(ogretmen: OgretmenCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_ogretmen(db, ogretmen)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Öğretmen oluşturulurken hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Öğretmen oluşturulurken hata oluştu: {str(e)}"
+        )
 
 @router.get("/", response_model=list[OgretmenRead])
 def list_ogretmenler(db: Session = Depends(get_db)):
     """
     Tüm öğretmenleri listele.
     """
-    ogretmenler = crud.get_ogretmenler(db)
-    if not ogretmenler:
-        raise HTTPException(status_code=404, detail="Hiç öğretmen bulunamadı")
-    return ogretmenler
+    try:
+        ogretmenler = crud.get_ogretmenler(db)
+        if not ogretmenler:
+            raise HTTPException(
+                status_code=404,
+                detail="Hiç öğretmen bulunamadı"
+            )
+        return ogretmenler
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Öğretmenleri listelerken hata oluştu: {str(e)}"
+        )
 
 @router.put("/{id}", response_model=OgretmenRead)
 def update_ogretmen_endpoint(id: UUID, ogretmen: OgretmenUpdate, db: Session = Depends(get_db)):
@@ -35,12 +47,18 @@ def update_ogretmen_endpoint(id: UUID, ogretmen: OgretmenUpdate, db: Session = D
     try:
         updated = crud.update_ogretmen(db, id, ogretmen)
         if not updated:
-            raise HTTPException(status_code=404, detail="Öğretmen bulunamadı")
+            raise HTTPException(
+                status_code=404,
+                detail="Öğretmen bulunamadı"
+            )
         return updated
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Güncelleme sırasında hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Güncelleme sırasında hata oluştu: {str(e)}"
+        )
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=204)
 def delete_ogretmen_endpoint(id: UUID, db: Session = Depends(get_db)):
     """
     Belirtilen ID'ye sahip öğretmeni siler.
@@ -48,7 +66,13 @@ def delete_ogretmen_endpoint(id: UUID, db: Session = Depends(get_db)):
     try:
         success = crud.delete_ogretmen(db, id)
         if not success:
-            raise HTTPException(status_code=404, detail="Öğretmen bulunamadı")
+            raise HTTPException(
+                status_code=404,
+                detail="Öğretmen bulunamadı"
+            )
         return {"detail": "Öğretmen başarıyla silindi"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Silme işlemi sırasında hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Silme işlemi sırasında hata oluştu: {str(e)}"
+        )
