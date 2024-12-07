@@ -53,12 +53,13 @@ def delete_ogrenci(db: Session, id: UUID):
     try:
         db_ogrenci = get_ogrenci_by_id(db, id)
         if not db_ogrenci:
-            return False
+            return False 
         db.delete(db_ogrenci)
         db.commit()
         return True
     except Exception as e:
         raise ValueError(f"Öğrenci silinirken hata: {e}")
+
 
 
 # Öğretmen CRUD İşlemleri
