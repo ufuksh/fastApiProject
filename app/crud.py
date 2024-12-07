@@ -81,9 +81,20 @@ def get_ogrenciler(db: Session):
         logger.exception(f"Öğrenciler listelenirken hata: {e}")
         raise ValueError(f"Öğrenciler listelenirken hata: {e}")
 
+def get_ogrenci_by_id(db: Session, id: str):
+    """
+    Belirtilen ID'ye sahip öğrenci kaydını getirir.
+    """
+    try:
+        ogrenci = get_by_id(db, Ogrenci, id)
+        return ogrenci
+    except Exception as e:
+        logger.exception(f"Ogrenci getirilirken hata: {e}")
+        raise e
+
 def update_ogrenci(db: Session, id: str, ogrenci: OgrenciUpdate):
     try:
-        db_ogrenci = get_by_id(db, Ogrenci, id)
+        db_ogrenci = get_ogrenci_by_id(db, id)
         if not db_ogrenci:
             logger.warning(f"Güncellenmek istenen öğrenci bulunamadı: {id}")
             return None
@@ -127,9 +138,20 @@ def get_ogretmenler(db: Session):
         logger.exception(f"Öğretmenler listelenirken hata: {e}")
         raise ValueError(f"Öğretmenler listelenirken hata: {e}")
 
+def get_ogretmen_by_id(db: Session, id: str):
+    """
+    Belirtilen ID'ye sahip öğretmen kaydını getirir.
+    """
+    try:
+        ogretmen = get_by_id(db, Ogretmen, id)
+        return ogretmen
+    except Exception as e:
+        logger.exception(f"Ogretmen getirilirken hata: {e}")
+        raise e
+
 def update_ogretmen(db: Session, id: str, ogretmen: OgretmenUpdate):
     try:
-        db_ogretmen = get_by_id(db, Ogretmen, id)
+        db_ogretmen = get_ogretmen_by_id(db, id)
         if not db_ogretmen:
             logger.warning(f"Güncellenmek istenen öğretmen bulunamadı: {id}")
             return None
@@ -169,9 +191,20 @@ def get_ders_programi(db: Session):
         logger.exception(f"Ders programları listelenirken hata: {e}")
         raise ValueError(f"Ders programları listelenirken hata: {e}")
 
+def get_ders_programi_by_id(db: Session, id: str):
+    """
+    Belirtilen ID'ye sahip ders programı kaydını getirir.
+    """
+    try:
+        ders_programi = get_by_id(db, DersProgrami, id)
+        return ders_programi
+    except Exception as e:
+        logger.exception(f"Ders programı getirilirken hata: {e}")
+        raise e
+
 def update_ders_programi(db: Session, id: str, ders_programi: DersProgramiUpdate):
     try:
-        db_ders_programi = get_by_id(db, DersProgrami, id)
+        db_ders_programi = get_ders_programi_by_id(db, id)
         if not db_ders_programi:
             logger.warning(f"Güncellenmek istenen ders programı bulunamadı: {id}")
             return None
