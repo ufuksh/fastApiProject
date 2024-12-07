@@ -56,22 +56,14 @@ def update_ogrenci_endpoint(id: UUID, ogrenci: OgrenciUpdate, db: Session = Depe
 
 @router.delete("/{id}", response_model=bool)
 def delete_ogrenci_endpoint(id: str, db: Session = Depends(get_db)):
-    """
-    Belirtilen ID'ye sahip öğrenciyi siler.
-    """
     try:
-        # ID'yi UUID formatına dönüştür
-        try:
-            uuid_id = UUID(id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Geçersiz UUID formatı")
-
+        uuid_id = UUID(id)
         success = delete_ogrenci(db, uuid_id)
         if not success:
             raise HTTPException(status_code=404, detail="Öğrenci bulunamadı")
         return True
-    except HTTPException:
-        raise  # HTTPException'ları olduğu gibi yükselt
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Geçersiz UUID formatı")
     except Exception as e:
         raise HTTPException(
             status_code=500,
