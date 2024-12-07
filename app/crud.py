@@ -7,8 +7,13 @@ from app.schemas import (
     DersProgramiCreate, DersProgramiUpdate
 )
 
+
 # Öğrenci CRUD İşlemleri
 def create_ogrenci(db: Session, ogrenci: OgrenciCreate):
+    # Benzersizlik kontrolü
+    existing_ogrenci = db.query(Ogrenci).filter(Ogrenci.ogrenci_numarasi == ogrenci.ogrenci_numarasi).first()
+    if existing_ogrenci:
+        raise ValueError(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
     try:
         db_ogrenci = Ogrenci(**ogrenci.dict())
         db.add(db_ogrenci)
@@ -17,6 +22,7 @@ def create_ogrenci(db: Session, ogrenci: OgrenciCreate):
         return db_ogrenci
     except Exception as e:
         raise ValueError(f"Öğrenci oluşturulurken hata: {e}")
+
 
 def get_ogrenciler(db: Session):
     try:
@@ -54,8 +60,13 @@ def delete_ogrenci(db: Session, id: UUID):
     except Exception as e:
         raise ValueError(f"Öğrenci silinirken hata: {e}")
 
+
 # Öğretmen CRUD İşlemleri
 def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
+    # Benzersizlik kontrolü
+    existing_ogretmen = db.query(Ogretmen).filter(Ogretmen.iletisim == ogretmen.iletisim).first()
+    if existing_ogretmen:
+        raise ValueError(f"Bu iletişim bilgisi zaten kayıtlı: {ogretmen.iletisim}")
     try:
         db_ogretmen = Ogretmen(**ogretmen.dict())
         db.add(db_ogretmen)
@@ -67,14 +78,9 @@ def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
 
 def get_ogretmenler(db: Session):
     try:
-        ogretmenler = db.query(Ogretmen).all()
-        for ogretmen in ogretmenler:
-            if isinstance(ogretmen.id, str):
-                ogretmen.id = uuid.UUID(ogretmen.id)
-        return ogretmenler
+        return db.query(Ogretmen).all()
     except Exception as e:
         raise ValueError(f"Öğretmenler listelenirken hata: {e}")
-
 
 def update_ogretmen(db: Session, id: UUID, ogretmen: OgretmenUpdate):
     try:
@@ -100,8 +106,23 @@ def delete_ogretmen(db: Session, id: UUID):
     except Exception as e:
         raise ValueError(f"Öğretmen silinirken hata: {e}")
 
+
 # Ders Programı CRUD İşlemleri
 def create_ders_programi(db: Session, dp: DersProgramiCreate):
+    # Benzersizlik kontrolü
+    existing_ders_programi = (
+        db.query(DersProgrami)
+        .filter(
+            DersProgrami.sinif == dp.sinif,
+            DersProgrami.ders == dp.ders,
+            DersProgrami.saat == dp.saat,
+        )
+        .first()
+    )
+    if existing_ders_programi:
+        raise ValueError(
+            f"Bu ders programı zaten kayıtlı: {dp.sinif}, {dp.ders}, {dp.saat}"
+        )
     try:
         db_dp = DersProgrami(**dp.dict())
         db.add(db_dp)
@@ -116,12 +137,6 @@ def get_ders_programlari(db: Session):
         return db.query(DersProgrami).all()
     except Exception as e:
         raise ValueError(f"Ders programları listelenirken hata: {e}")
-
-def get_ders_programi_by_id(db: Session, id: UUID):
-    try:
-        return db.query(DersProgrami).filter(DersProgrami.id == id).first()
-    except Exception as e:
-        raise ValueError(f"Ders programı getirilirken hata: {e}")
 
 def update_ders_programi(db: Session, id: UUID, dp: DersProgramiUpdate):
     try:
@@ -140,9 +155,4 @@ def delete_ders_programi(db: Session, id: UUID):
     try:
         db_dp = get_ders_programi_by_id(db, id)
         if not db_dp:
-            return False
-        db.delete(db_dp)
-        db.commit()
-        return True
-    except Exception as e:
-        raise ValueError(f"Ders programı silinirken hata: {e}")
+            
