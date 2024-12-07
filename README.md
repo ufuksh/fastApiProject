@@ -12,3 +12,4 @@ Bu proje, FastAPI, SQLAlchemy, Pydantic ve temel bir HTML/CSS/JS arayüzü kulla
    pip install -r requirements.txt
    ```
 # fastApiProject
+# fastApiProject
