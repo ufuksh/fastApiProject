@@ -7,10 +7,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const dersProgramiTableBody = document.querySelector("#ders-programi-table tbody");
     const ogretmenSelect = document.getElementById("ogretmen-select");
 
+    async function fetchAndHandle(url, options = {}) {
+        try {
+            const res = await fetch(url, options);
+            if (!res.ok) {
+                const error = await res.json();
+                console.error(`Hata: ${error.detail || "Bilinmeyen bir hata oluştu."}`);
+                alert(error.detail || "Bir hata oluştu.");
+            }
+            return res.ok ? res.json() : null;
+        } catch (err) {
+            console.error("Sunucuya bağlanırken hata oluştu:", err);
+            alert("Sunucuya bağlanırken hata oluştu.");
+            return null;
+        }
+    }
+
     async function loadOgretmenSelect() {
-        const res = await fetch("/ogretmenler");
-        if (res.ok) {
-            const ogretmenler = await res.json();
+        const ogretmenler = await fetchAndHandle("/ogretmenler/");
+        if (ogretmenler) {
             ogretmenSelect.innerHTML = `<option value="">Öğretmen Seçin</option>`;
             ogretmenler.forEach(o => {
                 const option = document.createElement("option");
@@ -24,28 +39,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // Öğrenci Ekle
     ogrenciForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const formData = new FormData(ogrenciForm);
-        const data = Object.fromEntries(formData.entries());
-        const res = await fetch("/ogrenciler/", {
+        const data = Object.fromEntries(new FormData(ogrenciForm).entries());
+        const result = await fetchAndHandle("/ogrenciler/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         });
-        if (res.ok) {
+        if (result) {
             await loadOgrenciler();
             ogrenciForm.reset();
-        } else {
-            const error = await res.json();
-            console.error("Hata:", error);
-            alert("Öğrenci eklenemedi!");
         }
     });
 
     // Öğrencileri Listele
     async function loadOgrenciler() {
-        const res = await fetch("/ogrenciler/");
-        if (res.ok) {
-            const ogrenciler = await res.json();
+        const ogrenciler = await fetchAndHandle("/ogrenciler/");
+        if (ogrenciler) {
             ogrenciTableBody.innerHTML = "";
             ogrenciler.forEach(o => {
                 const row = document.createElement("tr");
@@ -67,39 +76,31 @@ document.addEventListener("DOMContentLoaded", () => {
     ogrenciTableBody.addEventListener("click", async (e) => {
         if (e.target.classList.contains("delete-ogrenci")) {
             const id = e.target.dataset.id;
-            const res = await fetch(`/ogrenciler/${id}`, { method: "DELETE" });
-            if (res.ok) {
-                await loadOgrenciler();
-            } else {
-                alert("Öğrenci silinemedi!");
-            }
+            const result = await fetchAndHandle(`/ogrenciler/${id}`, { method: "DELETE" });
+            if (result) await loadOgrenciler();
         }
     });
 
     // Öğretmen Ekle
     ogretmenForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const formData = new FormData(ogretmenForm);
-        const data = Object.fromEntries(formData.entries());
-        const res = await fetch("/ogretmenler/", {
+        const data = Object.fromEntries(new FormData(ogretmenForm).entries());
+        const result = await fetchAndHandle("/ogretmenler/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         });
-        if (res.ok) {
+        if (result) {
             await loadOgretmenler();
             await loadOgretmenSelect();
             ogretmenForm.reset();
-        } else {
-            alert("Öğretmen eklenemedi!");
         }
     });
 
     // Öğretmenleri Listele
     async function loadOgretmenler() {
-        const res = await fetch("/ogretmenler/");
-        if (res.ok) {
-            const ogretmenler = await res.json();
+        const ogretmenler = await fetchAndHandle("/ogretmenler/");
+        if (ogretmenler) {
             ogretmenTableBody.innerHTML = "";
             ogretmenler.forEach(o => {
                 const row = document.createElement("tr");
@@ -119,25 +120,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ders Programı İşlemleri
     dersProgramiForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const formData = new FormData(dersProgramiForm);
-        const data = Object.fromEntries(formData.entries());
-        const res = await fetch("/dersprogrami/", {
+        const data = Object.fromEntries(new FormData(dersProgramiForm).entries());
+        const result = await fetchAndHandle("/dersprogrami/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         });
-        if (res.ok) {
+        if (result) {
             await loadDersProgrami();
             dersProgramiForm.reset();
-        } else {
-            alert("Ders programı eklenemedi!");
         }
     });
 
     async function loadDersProgrami() {
-        const res = await fetch("/dersprogrami/");
-        if (res.ok) {
-            const dersler = await res.json();
+        const dersler = await fetchAndHandle("/dersprogrami/");
+        if (dersler) {
             dersProgramiTableBody.innerHTML = "";
             dersler.forEach(d => {
                 const row = document.createElement("tr");
@@ -153,6 +150,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+
+    // Ders Programı Sil
+    dersProgramiTableBody.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("delete-ders-programi")) {
+            const id = e.target.dataset.id;
+            const result = await fetchAndHandle(`/dersprogrami/${id}`, { method: "DELETE" });
+            if (result) await loadDersProgrami();
+        }
+    });
 
     // Sayfa yüklendiğinde verileri getir
     (async function init() {

@@ -13,18 +13,27 @@ def create_ders_programi(dp: DersProgramiCreate, db: Session = Depends(get_db)):
     Yeni bir ders programı oluşturur.
     """
     try:
-        return crud.create_ders_programi(db, dp)
+        created_program = crud.create_ders_programi(db, dp)
+        return created_program
     except Exception as e:
-        # Detaylı loglama yapılabilir
-        raise HTTPException(status_code=400, detail=f"Ders programı oluşturulurken hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ders programı oluşturulurken hata oluştu: {str(e)}"
+        )
 
 @router.get("/", response_model=list[DersProgramiRead])
 def list_ders_programlari(db: Session = Depends(get_db)):
     """
     Tüm ders programlarını listele.
     """
-    ders_programlari = crud.get_ders_programlari(db)
-    return ders_programlari  # Boş liste döndürülebilir, 404 yerine.
+    try:
+        ders_programlari = crud.get_ders_programlari(db)
+        return ders_programlari  # Boş liste döndürülebilir.
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ders programları listelenirken hata oluştu: {str(e)}"
+        )
 
 @router.put("/{id}", response_model=DersProgramiRead)
 def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session = Depends(get_db)):
@@ -37,7 +46,10 @@ def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session 
             raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
         return updated
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Güncelleme sırasında hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Güncelleme sırasında hata oluştu: {str(e)}"
+        )
 
 @router.delete("/{id}")
 def delete_ders_programi_endpoint(id: UUID, db: Session = Depends(get_db)):
@@ -50,4 +62,7 @@ def delete_ders_programi_endpoint(id: UUID, db: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
         return {"detail": "Ders programı başarıyla silindi"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Silme işlemi sırasında hata oluştu: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Silme işlemi sırasında hata oluştu: {str(e)}"
+        )

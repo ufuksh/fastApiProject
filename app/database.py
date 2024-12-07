@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
+from sqlalchemy.exc import SQLAlchemyError
 
 # Veritabanı bağlantı motoru
 engine = create_engine(
@@ -20,5 +21,8 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise RuntimeError(f"Veritabanı işlemi sırasında hata oluştu: {str(e)}")
     finally:
         db.close()

@@ -13,7 +13,8 @@ def create_ogrenci(ogrenci: OgrenciCreate, db: Session = Depends(get_db)):
     Yeni bir öğrenci oluşturur.
     """
     try:
-        return crud.create_ogrenci(db, ogrenci)
+        created_ogrenci = crud.create_ogrenci(db, ogrenci)
+        return created_ogrenci
     except Exception as e:
         raise HTTPException(
             status_code=400,
@@ -27,15 +28,10 @@ def list_ogrenciler(db: Session = Depends(get_db)):
     """
     try:
         ogrenciler = crud.get_ogrenciler(db)
-        if not ogrenciler:
-            raise HTTPException(
-                status_code=404,
-                detail="Hiç öğrenci bulunamadı"
-            )
-        return ogrenciler
+        return ogrenciler  # Öğrenciler yoksa boş liste döner.
     except Exception as e:
         raise HTTPException(
-            status_code=400,
+            status_code=500,
             detail=f"Öğrenciler listelenirken hata oluştu: {str(e)}"
         )
 

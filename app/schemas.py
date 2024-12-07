@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
 
-
 # Öğrenci Şemaları
 class OgrenciBase(BaseModel):
     ad: str
@@ -11,10 +10,8 @@ class OgrenciBase(BaseModel):
     sinif: str
     iletisim: str
 
-
 class OgrenciCreate(OgrenciBase):
     pass
-
 
 class OgrenciUpdate(BaseModel):
     ad: Optional[str] = None
@@ -22,7 +19,6 @@ class OgrenciUpdate(BaseModel):
     ogrenci_numarasi: Optional[str] = None
     sinif: Optional[str] = None
     iletisim: Optional[str] = None
-
 
 class OgrenciRead(OgrenciBase):
     id: UUID
@@ -38,17 +34,14 @@ class OgretmenBase(BaseModel):
     brans: str
     iletisim: str
 
-
 class OgretmenCreate(OgretmenBase):
     pass
-
 
 class OgretmenUpdate(BaseModel):
     ad: Optional[str] = None
     soyad: Optional[str] = None
     brans: Optional[str] = None
     iletisim: Optional[str] = None
-
 
 class OgretmenRead(OgretmenBase):
     id: UUID
@@ -64,17 +57,14 @@ class DersProgramiBase(BaseModel):
     saat: str
     ogretmen_id: UUID
 
-
 class DersProgramiCreate(DersProgramiBase):
     pass
-
 
 class DersProgramiUpdate(BaseModel):
     sinif: Optional[str] = None
     ders: Optional[str] = None
     saat: Optional[str] = None
     ogretmen_id: Optional[UUID] = None
-
 
 class DersProgramiRead(DersProgramiBase):
     id: UUID

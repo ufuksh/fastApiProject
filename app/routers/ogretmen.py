@@ -13,7 +13,8 @@ def create_ogretmen(ogretmen: OgretmenCreate, db: Session = Depends(get_db)):
     Yeni bir öğretmen oluşturur.
     """
     try:
-        return crud.create_ogretmen(db, ogretmen)
+        created_ogretmen = crud.create_ogretmen(db, ogretmen)
+        return created_ogretmen
     except Exception as e:
         raise HTTPException(
             status_code=400,
@@ -27,15 +28,10 @@ def list_ogretmenler(db: Session = Depends(get_db)):
     """
     try:
         ogretmenler = crud.get_ogretmenler(db)
-        if not ogretmenler:
-            raise HTTPException(
-                status_code=404,
-                detail="Hiç öğretmen bulunamadı"
-            )
-        return ogretmenler
+        return ogretmenler  # Boş liste döndürülebilir, 404 yerine.
     except Exception as e:
         raise HTTPException(
-            status_code=400,
+            status_code=500,
             detail=f"Öğretmenleri listelerken hata oluştu: {str(e)}"
         )
 

@@ -1,28 +1,87 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    line-height: 1.6;
+    background-color: #f9f9f9; /* Arka plan rengini biraz daha yumuşak yap */
+    color: #333; /* Yazı rengini biraz daha koyulaştır */
 }
+
 h1, h2 {
     font-weight: normal;
+    color: #444; /* Başlıkların rengini biraz daha belirgin yap */
 }
+
 table {
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 20px;
     width: 100%;
+    background-color: #fff; /* Tablo arka planı beyaz */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
 }
+
 table, th, td {
-    border: 1px solid #ccc;
+    border: 1px solid #ddd; /* Kenarlıkları daha zarif yap */
 }
+
+th {
+    background-color: #f4f4f4; /* Başlık hücreleri için açık gri arka plan */
+    font-weight: bold;
+    text-transform: uppercase; /* Başlıkları büyük harf yap */
+}
+
 th, td {
-    padding: 8px;
+    padding: 10px; /* Hücre içi boşlukları biraz artır */
     text-align: left;
 }
+
 form {
     margin-top: 20px;
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
+    gap: 10px;
+    background-color: #fff; /* Form arka planı beyaz */
+    padding: 15px;
+    border: 1px solid #ddd; /* Form çevresine zarif kenarlık */
+    border-radius: 5px; /* Kenarları yuvarla */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
 }
+
 form input, form button, form select {
-    padding: 5px;
+    padding: 8px; /* Girdi alanlarını daha geniş yap */
+    border: 1px solid #ccc; /* Daha ince kenarlık */
+    border-radius: 3px; /* Hafif yuvarlatılmış kenarlar */
+    font-size: 14px;
+}
+
+form button {
+    background-color: #007BFF; /* Düğme rengi mavi */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #0056b3; /* Hover durumunda koyu mavi */
+}
+
+form select {
+    min-width: 150px; /* Dropdown genişliği için minimum değer */
+}
+
+button.delete-ogrenci, button.delete-ogretmen, button.delete-ders-programi {
+    background-color: #dc3545; /* Silme butonları için kırmızı */
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button.delete-ogrenci:hover,
+button.delete-ogretmen:hover,
+button.delete-ders-programi:hover {
+    background-color: #a71d2a; /* Hover durumunda koyu kırmızı */
 }
