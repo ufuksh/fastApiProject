@@ -5,33 +5,6 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
-# --- Öğrenci Şemaları ---
-
-class OgrenciBase(BaseModel):
-    ad: str = Field(..., max_length=100, description="Öğrencinin adı")
-    soyad: str = Field(..., max_length=100, description="Öğrencinin soyadı")
-    ogrenci_numarasi: str = Field(..., max_length=50, description="Öğrenci numarası")
-    sinif: str = Field(..., max_length=10, description="Öğrencinin sınıfı")
-    iletisim: EmailStr = Field(..., description="Öğrencinin e-posta adresi")
-
-class OgrenciCreate(OgrenciBase):
-    pass
-
-class OgrenciUpdate(BaseModel):
-    ad: Optional[str] = Field(None, max_length=100, description="Öğrencinin adı")
-    soyad: Optional[str] = Field(None, max_length=100, description="Öğrencinin soyadı")
-    ogrenci_numarasi: Optional[str] = Field(None, max_length=50, description="Öğrenci numarası")
-    sinif: Optional[str] = Field(None, max_length=10, description="Öğrencinin sınıfı")
-    iletisim: Optional[EmailStr] = Field(None, description="Öğrencinin e-posta adresi")
-
-class OgrenciRead(OgrenciBase):
-    id: UUID
-    kayit_tarihi: datetime
-    guncelleme_tarihi: Optional[datetime]
-
-    class Config:
-        orm_mode = True
-
 # --- Öğretmen Şemaları ---
 
 class OgretmenBase(BaseModel):
@@ -39,6 +12,7 @@ class OgretmenBase(BaseModel):
     soyad: str = Field(..., max_length=100, description="Öğretmenin soyadı")
     brans: str = Field(..., max_length=100, description="Öğretmenin branşı")
     iletisim: EmailStr = Field(..., description="Öğretmenin e-posta adresi")
+    ogretmen_numarasi: str = Field(..., max_length=50, description="Öğretmen numarası")  # Yeni alan
 
 class OgretmenCreate(OgretmenBase):
     pass
@@ -48,39 +22,40 @@ class OgretmenUpdate(BaseModel):
     soyad: Optional[str] = Field(None, max_length=100, description="Öğretmenin soyadı")
     brans: Optional[str] = Field(None, max_length=100, description="Öğretmenin branşı")
     iletisim: Optional[EmailStr] = Field(None, description="Öğretmenin e-posta adresi")
+    ogretmen_numarasi: Optional[str] = Field(None, max_length=50, description="Öğretmen numarası")  # Yeni alan
 
 class OgretmenRead(OgretmenBase):
     id: UUID
     kayit_tarihi: datetime
     guncelleme_tarihi: Optional[datetime]
     ders_programlari: List["DersProgramiRead"] = []
-
+    
     class Config:
         orm_mode = True
 
-# --- Ders Programı Şemaları ---
+# --- DersProgrami Şemaları ---
 
 class DersProgramiBase(BaseModel):
-    sinif: str = Field(..., max_length=10, description="Dersin sınıfı")
-    ders: str = Field(..., max_length=100, description="Dersin adı")
-    saat: str = Field(..., max_length=20, description="Dersin saati")
-    ogretmen_id: UUID = Field(..., description="Dersin öğretmeni ID'si")
+    sinif: str = Field(..., max_length=10, description="Sınıf")
+    ders: str = Field(..., max_length=100, description="Ders adı")
+    saat: str = Field(..., max_length=20, description="Ders saati")
+    ogretmen_id: UUID = Field(..., description="Öğretmen ID'si")
 
 class DersProgramiCreate(DersProgramiBase):
     pass
 
 class DersProgramiUpdate(BaseModel):
-    sinif: Optional[str] = Field(None, max_length=10, description="Dersin sınıfı")
-    ders: Optional[str] = Field(None, max_length=100, description="Dersin adı")
-    saat: Optional[str] = Field(None, max_length=20, description="Dersin saati")
-    ogretmen_id: Optional[UUID] = Field(None, description="Dersin öğretmeni ID'si")
+    sinif: Optional[str] = Field(None, max_length=10, description="Sınıf")
+    ders: Optional[str] = Field(None, max_length=100, description="Ders adı")
+    saat: Optional[str] = Field(None, max_length=20, description="Ders saati")
+    ogretmen_id: Optional[UUID] = Field(None, description="Öğretmen ID'si")
 
 class DersProgramiRead(DersProgramiBase):
     id: UUID
     kayit_tarihi: datetime
     guncelleme_tarihi: Optional[datetime]
-    ogretmen: Optional["OgretmenRead"] = None
-
+    ogretmen: OgretmenRead
+    
     class Config:
         orm_mode = True
 

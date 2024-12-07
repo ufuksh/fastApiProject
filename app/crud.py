@@ -61,7 +61,7 @@ def create_ogrenci(db: Session, ogrenci: OgrenciCreate):
     existing_ogrenci = db.query(Ogrenci).filter(Ogrenci.ogrenci_numarasi == ogrenci.ogrenci_numarasi).first()
     if existing_ogrenci:
         logger.info(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
-        return existing_ogrenci  # Mevcut öğrenciyi döndür
+        raise ValueError(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
     try:
         db_ogrenci = Ogrenci(**ogrenci.dict())
         db.add(db_ogrenci)
@@ -110,7 +110,12 @@ def update_ogrenci(db: Session, id: str, ogrenci: OgrenciUpdate):
         db.refresh(db_ogrenci)
         logger.info(f"Öğrenci güncellendi: {id}")
         return db_ogrenci
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}")
+        raise ValueError(f"Bu öğrenci numarası zaten kayıtlı: {ogrenci.ogrenci_numarasi}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Öğrenci güncellenirken hata: {e}")
         raise ValueError(f"Öğrenci güncellenirken hata: {e}")
 
@@ -123,7 +128,7 @@ def create_ogretmen(db: Session, ogretmen: OgretmenCreate):
     existing_ogretmen = db.query(Ogretmen).filter(Ogretmen.ogretmen_numarasi == ogretmen.ogretmen_numarasi).first()
     if existing_ogretmen:
         logger.info(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
-        return existing_ogretmen  # Mevcut öğretmeni döndür
+        raise ValueError(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
     try:
         db_ogretmen = Ogretmen(**ogretmen.dict())
         db.add(db_ogretmen)
@@ -172,7 +177,12 @@ def update_ogretmen(db: Session, id: str, ogretmen: OgretmenUpdate):
         db.refresh(db_ogretmen)
         logger.info(f"Öğretmen güncellendi: {id}")
         return db_ogretmen
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}")
+        raise ValueError(f"Bu öğretmen numarası zaten kayıtlı: {ogretmen.ogretmen_numarasi}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Öğretmen güncellenirken hata: {e}")
         raise ValueError(f"Öğretmen güncellenirken hata: {e}")
 
@@ -236,9 +246,14 @@ def update_ders_programi(db: Session, id: str, ders_programi: DersProgramiUpdate
         db.refresh(db_ders_programi)
         logger.info(f"Ders programı güncellendi: {id}")
         return db_ders_programi
+    except IntegrityError as ie:
+        db.rollback()
+        logger.error(f"Ders programı eklenirken benzersiz kısıtlamaya uyulmadı: {ie}")
+        raise ValueError(f"Ders programı eklenirken benzersiz kısıtlamaya uyulmadı: {ie}") from ie
     except Exception as e:
+        db.rollback()
         logger.exception(f"Ders programı güncellenirken hata: {e}")
-        raise ValueError(f"Ders programı güncellenirken hata: {e}")
+        raise ValueError(f"Ders programı güncellenirken hata: {e}") from e
 
 def delete_ders_programi(db: Session, id: str):
     return delete_by_id(db, DersProgrami, id)
