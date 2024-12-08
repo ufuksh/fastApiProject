@@ -1,8 +1,8 @@
-fastapi==0.115.5
-uvicorn==0.22.0
-sqlalchemy==2.0.20
-alembic==1.11.1
-pymysql==1.0.3
-pydantic==2.6.1
-pydantic-settings==2.6.1
-python-dotenv==1.0.1
+fastapi
+uvicorn
+sqlalchemy
+alembic
+pymysql
+pydantic
+pydantic-settings
+python-dotenv
