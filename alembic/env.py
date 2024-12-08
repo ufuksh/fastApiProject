@@ -3,7 +3,11 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 # Modellerden Base sınıfını içe aktarın
-from app.models import Base  # 'app.models' doğru yol olduğundan emin olun
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+from app.models import Base  # Base'in doğru şekilde import edildiğinden emin olun
 
 # Alembic Config nesnesi
 config = context.config
