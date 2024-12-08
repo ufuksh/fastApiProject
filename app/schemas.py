@@ -5,6 +5,33 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
+# --- Öğrenci Şemaları ---
+
+class OgrenciBase(BaseModel):
+    ad: str = Field(..., max_length=100, description="Öğrencinin adı")
+    soyad: str = Field(..., max_length=100, description="Öğrencinin soyadı")
+    ogrenci_numarasi: str = Field(..., max_length=50, description="Öğrenci numarası")
+    sinif: str = Field(..., max_length=10, description="Sınıf")
+    iletisim: EmailStr = Field(..., description="Öğrencinin e-posta adresi")
+
+class OgrenciCreate(OgrenciBase):
+    pass
+
+class OgrenciUpdate(BaseModel):
+    ad: Optional[str] = Field(None, max_length=100, description="Öğrencinin adı")
+    soyad: Optional[str] = Field(None, max_length=100, description="Öğrencinin soyadı")
+    ogrenci_numarasi: Optional[str] = Field(None, max_length=50, description="Öğrenci numarası")
+    sinif: Optional[str] = Field(None, max_length=10, description="Sınıf")
+    iletisim: Optional[EmailStr] = Field(None, description="Öğrencinin e-posta adresi")
+
+class OgrenciRead(OgrenciBase):
+    id: UUID
+    kayit_tarihi: datetime
+    guncelleme_tarihi: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
 # --- Öğretmen Şemaları ---
 
 class OgretmenBase(BaseModel):
@@ -33,7 +60,7 @@ class OgretmenRead(OgretmenBase):
     class Config:
         orm_mode = True
 
-# --- DersProgrami Şemaları ---
+# --- Ders Programı Şemaları ---
 
 class DersProgramiBase(BaseModel):
     sinif: str = Field(..., max_length=10, description="Sınıf")
@@ -64,7 +91,3 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.schemas import OgretmenRead, DersProgramiRead
-
-# Optional: DersProgramiRead'ın OgretmenRead'ı referans alması için güncelleme
-DersProgramiRead.update_forward_refs()
-OgretmenRead.update_forward_refs()
