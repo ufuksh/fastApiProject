@@ -1,18 +1,18 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, ForeignKey, DateTime
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.dialects.mysql import CHAR
 from sqlalchemy.orm import relationship
-from app.database import Base  # Base'in doğru içe aktarıldığından emin olun
+from app.database import Base  # Base sınıfını içe aktar
 
-
+# Öğrenci Modeli
 class Ogrenci(Base):
     __tablename__ = "ogrenciler"
 
     id = Column(
         CHAR(36),
         primary_key=True,
-        default=lambda: str(uuid.uuid4()),
+        default=lambda: str(uuid.uuid4()),  # Varsayılan UUID oluştur
         unique=True,
         nullable=False,
     )
@@ -27,12 +27,10 @@ class Ogrenci(Base):
     )
 
     def __repr__(self):
-        return (
-            f"<Ogrenci(id={self.id}, ad={self.ad}, soyad={self.soyad}, "
-            f"ogrenci_numarasi={self.ogrenci_numarasi})>"
-        )
+        return f"<Ogrenci(id={self.id}, ad={self.ad}, soyad={self.soyad})>"
 
 
+# Öğretmen Modeli
 class Ogretmen(Base):
     __tablename__ = "ogretmenler"
 
@@ -60,12 +58,10 @@ class Ogretmen(Base):
     )
 
     def __repr__(self):
-        return (
-            f"<Ogretmen(id={self.id}, ad={self.ad}, soyad={self.soyad}, "
-            f"brans={self.brans})>"
-        )
+        return f"<Ogretmen(id={self.id}, ad={self.ad}, soyad={self.soyad}, brans={self.brans})>"
 
 
+# Ders Programı Modeli
 class DersProgrami(Base):
     __tablename__ = "dersprogrami"
 
@@ -97,7 +93,4 @@ class DersProgrami(Base):
     )
 
     def __repr__(self):
-        return (
-            f"<DersProgrami(id={self.id}, sinif={self.sinif}, ders={self.ders}, "
-            f"saat={self.saat}, ogretmen_id={self.ogretmen_id})>"
-        )
+        return f"<DersProgrami(id={self.id}, sinif={self.sinif}, ders={self.ders})>"

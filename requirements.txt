@@ -1,6 +1,21 @@
-fastapi
-uvicorn
-sqlalchemy
-pymysql
-alembic
-pydantic
+# FastAPI
+fastapi==0.95.2
+
+# Uvicorn - ASGI sunucusu
+uvicorn[standard]==0.22.0
+
+# SQLAlchemy - ORM
+sqlalchemy==2.0.20
+
+# Alembic - Veritabanı migrasyonları için
+alembic==1.11.1
+
+# PyMySQL - MariaDB için MySQL bağlantısı
+pymysql==1.0.3
+
+# Pydantic - Veri doğrulama
+pydantic==2.6.1
+pydantic-settings==2.6.1
+
+# Dotenv - .env dosyalarını okumak için
+python-dotenv==1.0.1

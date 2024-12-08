@@ -1,87 +1,107 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from uuid import UUID
-from app.schemas import DersProgramiCreate, DersProgramiRead, DersProgramiUpdate
+from typing import List
 from app.database import get_db
-from app import crud
-import logging
+from app.models import DersProgrami, Ogretmen
+from pydantic import BaseModel
 
+# Router oluştur
 router = APIRouter()
 
-# Logger Ayarları
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-handler.setFormatter(formatter)
-if not logger.handlers:
-    logger.addHandler(handler)
+# Pydantic modelleri
+class DersProgramiBase(BaseModel):
+    sinif: str
+    ders: str
+    saat: str
+    ogretmen_id: str  # İlişkili öğretmen ID'si
 
-@router.post("/", response_model=DersProgramiRead, status_code=201)
-def create_ders_programi(dp: DersProgramiCreate, db: Session = Depends(get_db)):
-    """
-    Yeni bir ders programı oluşturur.
-    """
-    try:
-        created_program = crud.create_ders_programi(db, dp)
-        logger.info(f"Yeni ders programı oluşturuldu: {created_program.id}")
-        return created_program
-    except ValueError as ve:
-        logger.error(f"Ders programı oluşturma hatası: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        logger.exception(f"Ders programı oluşturulurken beklenmeyen hata: {e}")
-        raise HTTPException(status_code=500, detail="Ders programı oluşturulurken sunucu hatası oluştu.")
+class DersProgramiCreate(DersProgramiBase):
+    pass
 
-@router.get("/", response_model=list[DersProgramiRead], status_code=200)
-def list_ders_programlari(db: Session = Depends(get_db)):
-    """
-    Tüm ders programlarını listeler.
-    """
-    try:
-        ders_programlari = crud.get_ders_programlari(db)
-        logger.info(f"{len(ders_programlari)} ders programı listelendi.")
-        return ders_programlari
-    except Exception as e:
-        logger.exception(f"Ders programları listelenirken beklenmeyen hata: {e}")
-        raise HTTPException(status_code=500, detail="Ders programları listelenirken sunucu hatası oluştu.")
+class DersProgramiResponse(DersProgramiBase):
+    id: str
 
-@router.put("/{id}", response_model=DersProgramiRead, status_code=200)
-def update_ders_programi_endpoint(id: UUID, dp: DersProgramiUpdate, db: Session = Depends(get_db)):
-    """
-    Belirtilen ID'ye sahip ders programını günceller.
-    """
-    try:
-        updated = crud.update_ders_programi(db, str(id), dp)
-        if not updated:
-            logger.warning(f"Güncellenmek istenen ders programı bulunamadı: {id}")
-            raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
-        logger.info(f"Ders programı güncellendi: {id}")
-        return updated
-    except ValueError as ve:
-        logger.error(f"Ders programı güncelleme hatası: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        logger.exception(f"Ders programı güncellenirken beklenmeyen hata: {e}")
-        raise HTTPException(status_code=500, detail="Ders programı güncellenirken sunucu hatası oluştu.")
+    class Config:
+        orm_mode = True  # ORM verileriyle çalışmak için gerekli
 
-@router.delete("/{id}", status_code=200)
-def delete_ders_programi_endpoint(id: UUID, db: Session = Depends(get_db)):
+
+# CRUD Endpoint'leri
+
+# Ders Programlarını Listele
+@router.get("/", response_model=List[DersProgramiResponse])
+def list_ders_programi(db: Session = Depends(get_db)):
     """
-    Belirtilen ID'ye sahip ders programını siler.
+    Tüm ders programlarını getir.
     """
-    try:
-        success = crud.delete_ders_programi(db, str(id))
-        if not success:
-            logger.warning(f"Ders programı silinemedi, bulunamadı: {id}")
-            raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
-        logger.info(f"Ders programı silindi: {id}")
-        return {"detail": "Ders programı başarıyla silindi"}
-    except ValueError as ve:
-        logger.error(f"Ders programı silme hatası: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        logger.exception(f"Ders programı silinirken beklenmeyen hata: {e}")
-        raise HTTPException(status_code=500, detail="Ders programı silinirken sunucu hatası oluştu.")
+    ders_programlari = db.query(DersProgrami).all()
+    return ders_programlari
+
+
+# Ders Programı Detayı
+@router.get("/{ders_programi_id}", response_model=DersProgramiResponse)
+def get_ders_programi(ders_programi_id: str, db: Session = Depends(get_db)):
+    """
+    Belirli bir ders programını ID'ye göre getir.
+    """
+    ders_programi = db.query(DersProgrami).filter(DersProgrami.id == ders_programi_id).first()
+    if not ders_programi:
+        raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
+    return ders_programi
+
+
+# Yeni Ders Programı Ekle
+@router.post("/", response_model=DersProgramiResponse)
+def create_ders_programi(ders_programi: DersProgramiCreate, db: Session = Depends(get_db)):
+    """
+    Yeni bir ders programı oluştur.
+    """
+    # Öğretmen ID'si doğrulama
+    ogretmen = db.query(Ogretmen).filter(Ogretmen.id == ders_programi.ogretmen_id).first()
+    if not ogretmen:
+        raise HTTPException(status_code=400, detail="Geçersiz öğretmen ID")
+
+    new_ders_programi = DersProgrami(**ders_programi.dict())
+    db.add(new_ders_programi)
+    db.commit()
+    db.refresh(new_ders_programi)
+    return new_ders_programi
+
+
+# Ders Programı Güncelle
+@router.put("/{ders_programi_id}", response_model=DersProgramiResponse)
+def update_ders_programi(
+    ders_programi_id: str, updated_ders_programi: DersProgramiCreate, db: Session = Depends(get_db)
+):
+    """
+    Belirli bir ders programını güncelle.
+    """
+    ders_programi = db.query(DersProgrami).filter(DersProgrami.id == ders_programi_id).first()
+    if not ders_programi:
+        raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
+    
+    # Öğretmen ID'si doğrulama
+    ogretmen = db.query(Ogretmen).filter(Ogretmen.id == updated_ders_programi.ogretmen_id).first()
+    if not ogretmen:
+        raise HTTPException(status_code=400, detail="Geçersiz öğretmen ID")
+
+    for key, value in updated_ders_programi.dict().items():
+        setattr(ders_programi, key, value)
+    
+    db.commit()
+    db.refresh(ders_programi)
+    return ders_programi
+
+
+# Ders Programı Sil
+@router.delete("/{ders_programi_id}")
+def delete_ders_programi(ders_programi_id: str, db: Session = Depends(get_db)):
+    """
+    Belirli bir ders programını sil.
+    """
+    ders_programi = db.query(DersProgrami).filter(DersProgrami.id == ders_programi_id).first()
+    if not ders_programi:
+        raise HTTPException(status_code=404, detail="Ders programı bulunamadı")
+    
+    db.delete(ders_programi)
+    db.commit()
+    return {"detail": "Ders programı başarıyla silindi"}
