@@ -1,22 +1,23 @@
+import os
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
-import os
-import sys
+from dotenv import load_dotenv
 
-# Proje kök dizinini Python path'ine ekleyin
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
-
-# Modelleri içe aktarın
-from app.models import Base
+# .env dosyasını yükleyin
+load_dotenv()
 
 # Alembic Config nesnesi
 config = context.config
 
+# .env'den DATABASE_URL'i al ve Alembic'e tanımla
+config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+
 # Loglama yapılandırması
 fileConfig(config.config_file_name)
 
-# MetaData nesnesi
+# Modelleri ve MetaData'yı içe aktarın
+from app.models import Base
 target_metadata = Base.metadata
 
 def run_migrations_offline():
