@@ -2,8 +2,8 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# Modellerden Base sınıfını ithal edin
-from app.models import Base  # Modül yolunu kontrol edin
+# Modellerden Base sınıfını içe aktarın
+from app.models import Base  # 'app.models' doğru yol olduğundan emin olun
 
 # Alembic Config nesnesi
 config = context.config
